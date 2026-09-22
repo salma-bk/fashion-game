@@ -42,6 +42,7 @@ const TABS = [
 export default function App() {
   const [outfit, setOutfit] = useState(DEFAULT_OUTFIT);
   const [activeTab, setActiveTab] = useState('peau');
+  const [toast, setToast] = useState(null);
   const [saved, setSaved] = useState(() => {
     try {
       const raw = localStorage.getItem('fashion-game-looks');
@@ -55,17 +56,25 @@ export default function App() {
     localStorage.setItem('fashion-game-looks', JSON.stringify(saved));
   }, [saved]);
 
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 2200);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
   const update = (key) => (value) => setOutfit((prev) => ({ ...prev, [key]: value }));
 
   const background = BACKGROUNDS.find((b) => b.id === outfit.background)?.value;
 
   const saveLook = () => {
     setSaved((prev) => [...prev, { ...outfit, id: Date.now() }]);
+    setToast('✨ Look sauvegardé !');
   };
 
   const loadLook = (look) => {
     const { id, ...rest } = look;
     setOutfit(rest);
+    setToast('👗 Look enfilé !');
   };
 
   const removeLook = (id) => {
@@ -81,7 +90,11 @@ export default function App() {
 
       <main className="app-main">
         <section className="stage" style={{ background }}>
-          <Doll outfit={outfit} />
+          <div className="stage-blob stage-blob-a" />
+          <div className="stage-blob stage-blob-b" />
+          <div className="doll-frame" key={JSON.stringify(outfit)}>
+            <Doll outfit={outfit} />
+          </div>
           <div className="stage-actions">
             <button className="btn btn-primary" onClick={() => setOutfit(randomOutfit())}>
               🎲 Tenue surprise
@@ -176,9 +189,18 @@ export default function App() {
         </section>
       </main>
 
-      {saved.length > 0 && (
-        <section className="gallery">
+      <section className="gallery">
+        <div className="gallery-header">
           <h2>Mes looks sauvegardés</h2>
+          {saved.length > 0 && <span className="gallery-count">{saved.length}</span>}
+        </div>
+
+        {saved.length === 0 ? (
+          <div className="gallery-empty">
+            <span className="gallery-empty-icon">🧺</span>
+            <p>Pas encore de look sauvegardé. Crée une tenue et clique sur « Sauvegarder » !</p>
+          </div>
+        ) : (
           <div className="gallery-grid">
             {saved.map((look) => (
               <div key={look.id} className="gallery-card">
@@ -199,8 +221,10 @@ export default function App() {
               </div>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
+
+      <div className={`toast ${toast ? 'toast-visible' : ''}`}>{toast}</div>
     </div>
   );
 }
