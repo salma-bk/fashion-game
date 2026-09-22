@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import Doll from './Doll';
+import Scene3D from './Scene3D';
 import { ColorPicker, StylePicker } from './Picker';
 import {
+  GENDERS,
+  BODY_TYPES,
   SKIN_TONES,
   HAIR_STYLES,
   HAIR_COLORS,
@@ -17,6 +19,8 @@ import {
 import './App.css';
 
 const DEFAULT_OUTFIT = {
+  gender: 'femme',
+  bodyType: 'standard',
   skin: SKIN_TONES[0],
   hairStyle: 'long',
   hairColor: HAIR_COLORS[0],
@@ -30,6 +34,7 @@ const DEFAULT_OUTFIT = {
 };
 
 const TABS = [
+  { id: 'silhouette', label: 'Silhouette' },
   { id: 'peau', label: 'Peau' },
   { id: 'cheveux', label: 'Cheveux' },
   { id: 'haut', label: 'Haut' },
@@ -41,7 +46,7 @@ const TABS = [
 
 export default function App() {
   const [outfit, setOutfit] = useState(DEFAULT_OUTFIT);
-  const [activeTab, setActiveTab] = useState('peau');
+  const [activeTab, setActiveTab] = useState('silhouette');
   const [toast, setToast] = useState(null);
   const [saved, setSaved] = useState(() => {
     try {
@@ -85,16 +90,15 @@ export default function App() {
     <div className="app-shell">
       <header className="app-header">
         <h1>✨ Fashion Studio</h1>
-        <p>Crée ton look parfait !</p>
+        <p>Crée ton look parfait en 3D !</p>
       </header>
 
       <main className="app-main">
         <section className="stage" style={{ background }}>
-          <div className="stage-blob stage-blob-a" />
-          <div className="stage-blob stage-blob-b" />
-          <div className="doll-frame" key={JSON.stringify(outfit)}>
-            <Doll outfit={outfit} />
+          <div className="doll-frame">
+            <Scene3D outfit={outfit} />
           </div>
+          <p className="stage-hint">🖱️ Glisse le personnage pour le faire tourner</p>
           <div className="stage-actions">
             <button className="btn btn-primary" onClick={() => setOutfit(randomOutfit())}>
               🎲 Tenue surprise
@@ -119,6 +123,18 @@ export default function App() {
           </nav>
 
           <div className="tab-panel">
+            {activeTab === 'silhouette' && (
+              <>
+                <StylePicker label="Genre" options={GENDERS} value={outfit.gender} onChange={update('gender')} />
+                <StylePicker
+                  label="Morphologie"
+                  options={BODY_TYPES}
+                  value={outfit.bodyType}
+                  onChange={update('bodyType')}
+                />
+              </>
+            )}
+
             {activeTab === 'peau' && (
               <ColorPicker label="Teint" colors={SKIN_TONES} value={outfit.skin} onChange={update('skin')} />
             )}
@@ -208,7 +224,7 @@ export default function App() {
                   className="gallery-stage"
                   style={{ background: BACKGROUNDS.find((b) => b.id === look.background)?.value }}
                 >
-                  <Doll outfit={look} />
+                  <Scene3D outfit={look} interactive={false} />
                 </div>
                 <div className="gallery-actions">
                   <button className="btn btn-small" onClick={() => loadLook(look)}>

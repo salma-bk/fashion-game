@@ -1,3 +1,15 @@
+export const GENDERS = [
+  { id: 'femme', label: 'Femme' },
+  { id: 'homme', label: 'Homme' },
+];
+
+export const BODY_TYPES = [
+  { id: 'fine', label: 'Fine' },
+  { id: 'standard', label: 'Standard' },
+  { id: 'athletique', label: 'Athlétique' },
+  { id: 'pulpeuse', label: 'Pulpeuse' },
+];
+
 export const SKIN_TONES = ['#ffe0bd', '#f1c27d', '#e0ac69', '#c68642', '#8d5524'];
 
 export const HAIR_STYLES = [
@@ -5,27 +17,36 @@ export const HAIR_STYLES = [
   { id: 'long', label: 'Long' },
   { id: 'bun', label: 'Chignon' },
   { id: 'ponytail', label: 'Couette' },
+  { id: 'bob', label: 'Carré' },
+  { id: 'curly', label: 'Bouclé' },
+  { id: 'undercut', label: 'Undercut' },
+  { id: 'bald', label: 'Rasé' },
 ];
 
-export const HAIR_COLORS = ['#2b1b0e', '#5a3825', '#caa472', '#e8b7d4', '#7a5cc0', '#e53e5c'];
+export const HAIR_COLORS = ['#2b1b0e', '#5a3825', '#caa472', '#e8b7d4', '#7a5cc0', '#e53e5c', '#3b3b3b', '#f4f1ea'];
 
 export const TOP_STYLES = [
   { id: 'tshirt', label: 'T-shirt' },
   { id: 'crop', label: 'Crop top' },
   { id: 'blouse', label: 'Blouse' },
+  { id: 'hoodie', label: 'Sweat à capuche' },
+  { id: 'jacket', label: 'Veste' },
+  { id: 'tank', label: 'Débardeur' },
 ];
 
-export const TOP_COLORS = ['#ff6ea9', '#ffd23f', '#5ec8d8', '#a78bfa', '#ffffff', '#ff8552'];
+export const TOP_COLORS = ['#ff6ea9', '#ffd23f', '#5ec8d8', '#a78bfa', '#ffffff', '#ff8552', '#2b2d42', '#38b26f'];
 
 export const BOTTOM_STYLES = [
   { id: 'skirt', label: 'Jupe' },
   { id: 'pants', label: 'Pantalon' },
   { id: 'shorts', label: 'Short' },
+  { id: 'jeans', label: 'Jean' },
+  { id: 'cargo', label: 'Cargo' },
 ];
 
-export const BOTTOM_COLORS = ['#2b2d42', '#ff6ea9', '#5ec8d8', '#ffd23f', '#ffffff', '#7a5cc0'];
+export const BOTTOM_COLORS = ['#2b2d42', '#ff6ea9', '#5ec8d8', '#ffd23f', '#ffffff', '#7a5cc0', '#4a5568', '#8b5e34'];
 
-export const SHOE_COLORS = ['#ff6ea9', '#2b2d42', '#ffffff', '#ffd23f', '#7a5cc0'];
+export const SHOE_COLORS = ['#ff6ea9', '#2b2d42', '#ffffff', '#ffd23f', '#7a5cc0', '#38b26f'];
 
 export const ACCESSORIES = [
   { id: 'none', label: 'Aucun', emoji: '' },
@@ -34,6 +55,8 @@ export const ACCESSORIES = [
   { id: 'bow', label: 'Noeud', emoji: '🎀' },
   { id: 'crown', label: 'Couronne', emoji: '👑' },
   { id: 'bag', label: 'Sac', emoji: '👜' },
+  { id: 'cap', label: 'Casquette', emoji: '🧢' },
+  { id: 'scarf', label: 'Écharpe', emoji: '🧣' },
 ];
 
 export const BACKGROUNDS = [
@@ -41,6 +64,7 @@ export const BACKGROUNDS = [
   { id: 'sunset', label: 'Coucher de soleil', value: 'linear-gradient(180deg, #ffd6a5 0%, #ff9ecb 100%)' },
   { id: 'sky', label: 'Ciel', value: 'linear-gradient(180deg, #cdeffd 0%, #a5d8ff 100%)' },
   { id: 'lilac', label: 'Lilas', value: 'linear-gradient(180deg, #ead6ff 0%, #d0b3ff 100%)' },
+  { id: 'night', label: 'Nuit', value: 'linear-gradient(180deg, #2b2d64 0%, #6b3fa0 100%)' },
 ];
 
 function randomFrom(arr) {
@@ -49,6 +73,8 @@ function randomFrom(arr) {
 
 export function randomOutfit() {
   return {
+    gender: randomFrom(GENDERS).id,
+    bodyType: randomFrom(BODY_TYPES).id,
     skin: randomFrom(SKIN_TONES),
     hairStyle: randomFrom(HAIR_STYLES).id,
     hairColor: randomFrom(HAIR_COLORS),
