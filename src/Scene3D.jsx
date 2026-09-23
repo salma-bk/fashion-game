@@ -5,9 +5,16 @@ import Character3D from './Character3D';
 function Lights() {
   return (
     <>
-      <ambientLight intensity={0.7} />
-      <hemisphereLight args={['#fff3fa', '#6b4a63', 0.55]} />
-      <directionalLight position={[3, 5, 4]} intensity={1.15} castShadow shadow-mapSize={[1024, 1024]} />
+      <ambientLight intensity={0.5} />
+      <hemisphereLight args={['#fff3fa', '#6b4a63', 0.4]} />
+      <directionalLight
+        position={[3, 5, 4]}
+        intensity={1.3}
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-bias={-0.0005}
+      />
+      <directionalLight position={[-3, 2, -2]} intensity={0.35} color="#cfe3ff" />
     </>
   );
 }

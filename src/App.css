@@ -133,6 +133,13 @@ body {
   transform: translateY(0) scale(0.97);
 }
 
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
 .btn-primary {
   background: linear-gradient(135deg, var(--pink), var(--pink-dark));
   color: white;

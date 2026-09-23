@@ -29,13 +29,27 @@ function useMetrics(gender, bodyType) {
   }, [gender, bodyType]);
 }
 
+function SkinMat({ color }) {
+  return <meshPhysicalMaterial color={color} roughness={0.48} clearcoat={0.22} clearcoatRoughness={0.4} />;
+}
+
+function FabricMat({ color, roughness = 0.62 }) {
+  return (
+    <meshPhysicalMaterial color={color} roughness={roughness} sheen={0.35} sheenRoughness={0.7} sheenColor={color} />
+  );
+}
+
+function HairMat({ color }) {
+  return <meshPhysicalMaterial color={color} roughness={0.38} clearcoat={0.18} clearcoatRoughness={0.3} />;
+}
+
 function Shoes({ color, legGap, legR }) {
   return (
     <>
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * legGap, legR * 0.4, legR * 0.5]} castShadow receiveShadow>
           <boxGeometry args={[legR * 1.5, legR * 0.7, legR * 2.3]} />
-          <meshStandardMaterial color={color} roughness={0.5} />
+          <FabricMat color={color} roughness={0.42} />
         </mesh>
       ))}
     </>
@@ -47,8 +61,8 @@ function BottomClothing({ style, color, legGap, legR, legLen, hipW }) {
     const h = legLen * 0.42;
     return (
       <mesh position={[0, legLen - h / 2, 0]} castShadow>
-        <cylinderGeometry args={[hipW * 0.52, hipW * 0.85, h, 18]} />
-        <meshStandardMaterial color={color} roughness={0.55} />
+        <cylinderGeometry args={[hipW * 0.52, hipW * 0.85, h, 24]} />
+        <FabricMat color={color} />
       </mesh>
     );
   }
@@ -59,8 +73,8 @@ function BottomClothing({ style, color, legGap, legR, legLen, hipW }) {
       <>
         {[-1, 1].map((side) => (
           <mesh key={side} position={[side * legGap, legLen - h / 2, 0]} castShadow>
-            <cylinderGeometry args={[legR * 1.18, legR * 1.1, h, 12]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <cylinderGeometry args={[legR * 1.18, legR * 1.1, h, 18]} />
+            <FabricMat color={color} />
           </mesh>
         ))}
       </>
@@ -72,14 +86,14 @@ function BottomClothing({ style, color, legGap, legR, legLen, hipW }) {
     <>
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * legGap, h / 2, 0]} castShadow>
-          <cylinderGeometry args={[legR * 1.15, legR * 1.08, h, 12]} />
-          <meshStandardMaterial color={color} roughness={0.55} />
+          <cylinderGeometry args={[legR * 1.15, legR * 1.08, h, 18]} />
+          <FabricMat color={color} />
         </mesh>
       ))}
       {style === 'cargo' && (
         <mesh position={[legGap, legLen * 0.55, legR * 1.1]} castShadow>
           <boxGeometry args={[legR * 0.9, legR * 0.9, legR * 0.4]} />
-          <meshStandardMaterial color={color} roughness={0.55} />
+          <FabricMat color={color} />
         </mesh>
       )}
     </>
@@ -91,7 +105,7 @@ function TopDetail({ style, color, shoulderW, yShoulder }) {
     return (
       <mesh position={[0, yShoulder + 0.02, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
         <torusGeometry args={[shoulderW * 0.22, shoulderW * 0.06, 8, 16]} />
-        <meshStandardMaterial color={color} roughness={0.55} />
+        <FabricMat color={color} />
       </mesh>
     );
   }
@@ -107,7 +121,7 @@ function TopDetail({ style, color, shoulderW, yShoulder }) {
     return (
       <mesh position={[0, yShoulder + 0.02, shoulderW * 0.3]} rotation={[0.4, 0, 0]} castShadow>
         <boxGeometry args={[shoulderW * 0.5, 0.06, 0.02]} />
-        <meshStandardMaterial color={color} roughness={0.5} />
+        <FabricMat color={color} />
       </mesh>
     );
   }
@@ -120,18 +134,18 @@ function Arm({ side, shoulderW, torsoTopY, armR, armLen, skin, sleeveColor, slee
   return (
     <group position={[x, torsoTopY - armR * 0.3, 0]} rotation={[0, 0, -tilt]}>
       <mesh position={[0, -armLen / 2, 0]} castShadow>
-        <cylinderGeometry args={[armR, armR * 0.85, armLen, 12]} />
-        <meshStandardMaterial color={skin} roughness={0.6} />
+        <cylinderGeometry args={[armR, armR * 0.85, armLen, 16]} />
+        <SkinMat color={skin} />
       </mesh>
       {sleeveCoverage > 0 && (
         <mesh position={[0, -(armLen * sleeveCoverage) / 2, 0]} castShadow>
-          <cylinderGeometry args={[armR * 1.18, armR * 1.05, armLen * sleeveCoverage, 12]} />
-          <meshStandardMaterial color={sleeveColor} roughness={0.5} />
+          <cylinderGeometry args={[armR * 1.18, armR * 1.05, armLen * sleeveCoverage, 16]} />
+          <FabricMat color={sleeveColor} />
         </mesh>
       )}
       <mesh position={[0, -armLen - armR * 0.5, 0]} castShadow>
-        <sphereGeometry args={[armR * 0.8, 10, 10]} />
-        <meshStandardMaterial color={skin} roughness={0.6} />
+        <sphereGeometry args={[armR * 0.8, 12, 12]} />
+        <SkinMat color={skin} />
       </mesh>
     </group>
   );
@@ -156,12 +170,12 @@ function Hair({ headR, style, color }) {
       return (
         <group>
           <mesh position={[0, headR * 0.35, 0]} scale={[1.05, 0.62, 1.05]} castShadow>
-            <sphereGeometry args={[headR * 1.02, 20, 20]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <sphereGeometry args={[headR * 1.02, 24, 24]} />
+            <HairMat color={color} />
           </mesh>
           <mesh position={[0, -headR * 0.1, -headR * 0.75]} rotation={[0.15, 0, 0]} castShadow>
-            <cylinderGeometry args={[headR * 0.55, headR * 0.3, headR * 2.1, 12]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <cylinderGeometry args={[headR * 0.55, headR * 0.3, headR * 2.1, 16]} />
+            <HairMat color={color} />
           </mesh>
         </group>
       );
@@ -169,12 +183,12 @@ function Hair({ headR, style, color }) {
       return (
         <group>
           <mesh position={[0, headR * 0.35, 0]} scale={[1.05, 0.6, 1.05]} castShadow>
-            <sphereGeometry args={[headR * 1.02, 20, 20]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <sphereGeometry args={[headR * 1.02, 24, 24]} />
+            <HairMat color={color} />
           </mesh>
           <mesh position={[0, headR * 0.95, -headR * 0.15]} castShadow>
-            <sphereGeometry args={[headR * 0.42, 14, 14]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <sphereGeometry args={[headR * 0.42, 16, 16]} />
+            <HairMat color={color} />
           </mesh>
         </group>
       );
@@ -182,20 +196,20 @@ function Hair({ headR, style, color }) {
       return (
         <group>
           <mesh position={[0, headR * 0.35, 0]} scale={[1.05, 0.6, 1.05]} castShadow>
-            <sphereGeometry args={[headR * 1.02, 20, 20]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <sphereGeometry args={[headR * 1.02, 24, 24]} />
+            <HairMat color={color} />
           </mesh>
           <mesh position={[0, headR * 0.35, -headR * 1.05]} rotation={[1.0, 0, 0]} castShadow>
-            <coneGeometry args={[headR * 0.32, headR * 1.5, 10]} />
-            <meshStandardMaterial color={color} roughness={0.55} />
+            <coneGeometry args={[headR * 0.32, headR * 1.5, 14]} />
+            <HairMat color={color} />
           </mesh>
         </group>
       );
     case 'bob':
       return (
         <mesh position={[0, headR * 0.05, 0]} scale={[1.12, 0.95, 1.12]} castShadow>
-          <sphereGeometry args={[headR * 1.0, 20, 20]} />
-          <meshStandardMaterial color={color} roughness={0.55} />
+          <sphereGeometry args={[headR * 1.0, 24, 24]} />
+          <HairMat color={color} />
         </mesh>
       );
     case 'curly':
@@ -203,8 +217,8 @@ function Hair({ headR, style, color }) {
         <group>
           {curlyOffsets.map((p, i) => (
             <mesh key={i} position={p} castShadow>
-              <sphereGeometry args={[headR * 0.32, 10, 10]} />
-              <meshStandardMaterial color={color} roughness={0.6} />
+              <sphereGeometry args={[headR * 0.32, 12, 12]} />
+              <HairMat color={color} />
             </mesh>
           ))}
         </group>
@@ -212,16 +226,16 @@ function Hair({ headR, style, color }) {
     case 'undercut':
       return (
         <mesh position={[0, headR * 0.55, 0]} scale={[0.95, 0.45, 0.95]} castShadow>
-          <sphereGeometry args={[headR * 0.98, 18, 18]} />
-          <meshStandardMaterial color={color} roughness={0.55} />
+          <sphereGeometry args={[headR * 0.98, 20, 20]} />
+          <HairMat color={color} />
         </mesh>
       );
     case 'short':
     default:
       return (
         <mesh position={[0, headR * 0.35, 0]} scale={[1.03, 0.55, 1.03]} castShadow>
-          <sphereGeometry args={[headR * 1.0, 18, 18]} />
-          <meshStandardMaterial color={color} roughness={0.55} />
+          <sphereGeometry args={[headR * 1.0, 20, 20]} />
+          <HairMat color={color} />
         </mesh>
       );
   }
@@ -326,22 +340,65 @@ function Accessory({ type, headR, topColor, bottomColor }) {
 function Head({ headY, headR, skin, hairStyle, hairColor, accessory, topColor, bottomColor }) {
   return (
     <group position={[0, headY, 0]}>
-      <mesh castShadow>
-        <sphereGeometry args={[headR, 24, 24]} />
-        <meshStandardMaterial color={skin} roughness={0.55} />
+      <mesh castShadow scale={[1, 1.06, 0.94]}>
+        <sphereGeometry args={[headR, 32, 32]} />
+        <SkinMat color={skin} />
       </mesh>
+
+      {/* nose */}
+      <mesh position={[0, -headR * 0.03, headR * 0.95]} scale={[0.55, 0.7, 0.6]}>
+        <sphereGeometry args={[headR * 0.14, 10, 10]} />
+        <SkinMat color={skin} />
+      </mesh>
+
+      {/* eyebrows */}
+      {[-1, 1].map((side) => (
+        <mesh
+          key={side}
+          position={[side * headR * 0.32, headR * 0.22, headR * 0.86]}
+          rotation={[0, 0, side * -0.12]}
+        >
+          <boxGeometry args={[headR * 0.26, headR * 0.045, headR * 0.03]} />
+          <meshStandardMaterial color="#3a2a20" roughness={0.7} />
+        </mesh>
+      ))}
+
+      {/* eyes (whites) */}
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * headR * 0.32, headR * 0.05, headR * 0.88]}>
-          <sphereGeometry args={[headR * 0.07, 8, 8]} />
-          <meshStandardMaterial color="#2b2b2b" />
+          <sphereGeometry args={[headR * 0.1, 12, 12]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.3} />
         </mesh>
       ))}
+      {/* eyes (iris/pupil) */}
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[side * headR * 0.32, headR * 0.05, headR * 0.95]}>
+          <sphereGeometry args={[headR * 0.06, 10, 10]} />
+          <meshPhysicalMaterial color="#2b2b2b" roughness={0.2} clearcoat={0.8} clearcoatRoughness={0.15} />
+        </mesh>
+      ))}
+      {/* catchlights */}
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[side * headR * 0.32 + headR * 0.02, headR * 0.08, headR * 1.0]}>
+          <sphereGeometry args={[headR * 0.018, 6, 6]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+      ))}
+
+      {/* mouth (smile curve) */}
+      <mesh position={[0, -headR * 0.38, headR * 0.87]} rotation={[0, 0, Math.PI]}>
+        <torusGeometry args={[headR * 0.16, headR * 0.026, 8, 16, Math.PI]} />
+        <meshStandardMaterial color="#c9576e" roughness={0.4} />
+      </mesh>
+
+      {/* blush */}
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * headR * 0.55, -headR * 0.15, headR * 0.68]}>
-          <sphereGeometry args={[headR * 0.14, 8, 8]} />
-          <meshStandardMaterial color="#ff9eb5" transparent opacity={0.55} />
+          <sphereGeometry args={[headR * 0.14, 10, 10]} />
+          <meshStandardMaterial color="#ff9eb5" transparent opacity={0.4} roughness={0.8} />
         </mesh>
       ))}
+
       <Hair headR={headR} style={hairStyle} color={hairColor} />
       <Accessory type={accessory} headR={headR} topColor={topColor} bottomColor={bottomColor} />
     </group>
@@ -397,8 +454,8 @@ export default function Character3D({ outfit }) {
     <group position={[0, -totalHeight / 2, 0]}>
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * legGap, m.legLen / 2, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[m.legR * 0.95, m.legR, m.legLen, 14]} />
-          <meshStandardMaterial color={skin} roughness={0.6} />
+          <cylinderGeometry args={[m.legR * 0.95, m.legR, m.legLen, 20]} />
+          <SkinMat color={skin} />
         </mesh>
       ))}
 
@@ -414,13 +471,13 @@ export default function Character3D({ outfit }) {
       <Shoes color={shoeColor} legGap={legGap} legR={m.legR} />
 
       <mesh position={[0, yHip + m.torsoH / 2, 0]} castShadow receiveShadow>
-        <cylinderGeometry args={[m.shoulderW / 2, m.hipW / 2, m.torsoH, 16]} />
-        <meshStandardMaterial color={skin} roughness={0.6} />
+        <cylinderGeometry args={[m.shoulderW / 2, m.hipW / 2, m.torsoH, 24]} />
+        <SkinMat color={skin} />
       </mesh>
 
       <mesh position={[0, yShoulder - topH / 2, 0]} castShadow>
-        <cylinderGeometry args={[(m.shoulderW * 1.1) / 2, (bottomWidthAtCoverage * 1.1) / 2, topH, 16]} />
-        <meshStandardMaterial color={topColor} roughness={0.5} />
+        <cylinderGeometry args={[(m.shoulderW * 1.1) / 2, (bottomWidthAtCoverage * 1.1) / 2, topH, 24]} />
+        <FabricMat color={topColor} />
       </mesh>
       <TopDetail style={topStyle} color={topColor} shoulderW={m.shoulderW} yShoulder={yShoulder} />
 
@@ -446,8 +503,8 @@ export default function Character3D({ outfit }) {
       />
 
       <mesh position={[0, yShoulder + m.neckH / 2, 0]} castShadow>
-        <cylinderGeometry args={[m.headR * 0.32, m.headR * 0.36, m.neckH, 12]} />
-        <meshStandardMaterial color={skin} roughness={0.6} />
+        <cylinderGeometry args={[m.headR * 0.32, m.headR * 0.36, m.neckH, 16]} />
+        <SkinMat color={skin} />
       </mesh>
 
       <Head
